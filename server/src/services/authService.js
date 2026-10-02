@@ -25,9 +25,12 @@ export async function registerCitoyen({ nom, telephone, motDePasse }) {
 }
 
 // US-02 / US-03 — Connexion citoyen ou agent
-export async function login({ telephone, motDePasse }) {
+export async function login({ telephone, motDePasse } = {}) {
+  if (!telephone) throw new ApiError(400, 'Le champ "telephone" est obligatoire')
+  if (!motDePasse) throw new ApiError(400, 'Le champ "motDePasse" est obligatoire')
+
   const user = db.users.find((u) => u.telephone === telephone)
-  if (!user) throw new ApiError(401, 'Identifiants incorrects')
+  if (!user) throw new ApiError(404, 'Utilisateur introuvable')
 
   const valid = await bcrypt.compare(motDePasse, user.motDePasseHash)
   if (!valid) throw new ApiError(401, 'Identifiants incorrects')
