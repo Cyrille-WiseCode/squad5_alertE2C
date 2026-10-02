@@ -40,3 +40,20 @@ export async function login({ telephone, motDePasse } = {}) {
   })
   return { token, user: { id: user.id, nom: user.nom, role: user.role } }
 }
+
+export async function loginAgent({ telephone, motDePasse } = {}) {
+  if (!telephone) throw new ApiError(400, 'Le champ "telephone" est obligatoire')
+  if (!motDePasse) throw new ApiError(400, 'Le champ "motDePasse" est obligatoire')
+
+  const user = db.users.find((u) => u.telephone === telephone)
+  if (!user) throw new ApiError(404, 'Identifiants incorrects')
+  if (user.role !== 'agent') throw new ApiError(403, 'Accès réservé aux agents')
+
+  const valid = await bcrypt.compare(motDePasse, user.motDePasseHash)
+  if (!valid) throw new ApiError(401, 'Identifiants incorrects')
+
+  const token = jwt.sign({ sub: user.id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: '7d'
+  })
+  return { token, user: { id: user.id, nom: user.nom, role: user.role } }
+}
