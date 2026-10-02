@@ -5,6 +5,10 @@ import { ApiError } from '../utils/apiError.js'
 
 // US-01 — Créer un compte citoyen
 export async function registerCitoyen({ nom, telephone, motDePasse }) {
+  if (!nom) throw new ApiError(400, 'Le champ "nom" est obligatoire')
+  if (!telephone) throw new ApiError(400, 'Le champ "telephone" est obligatoire')
+  if (!motDePasse) throw new ApiError(400, 'Le champ "motDePasse" est obligatoire')
+
   const exists = db.users.find((u) => u.telephone === telephone)
   if (exists) throw new ApiError(409, 'Un compte existe déjà avec ce numéro')
 
