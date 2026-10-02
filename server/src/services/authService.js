@@ -1,0 +1,35 @@
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { db } from '../models/store.js'
+import { ApiError } from '../utils/apiError.js'
+
+// US-01 — Créer un compte citoyen
+export async function registerCitoyen({ nom, telephone, motDePasse }) {
+  const exists = db.users.find((u) => u.telephone === telephone)
+  if (exists) throw new ApiError(409, 'Un compte existe déjà avec ce numéro')
+
+  const motDePasseHash = await bcrypt.hash(motDePasse, 10)
+  const user = {
+    id: db.users.length + 1,
+    nom,
+    telephone,
+    motDePasseHash,
+    role: 'citoyen'
+  }
+  db.users.push(user)
+  return { id: user.id, nom: user.nom, role: user.role }
+}
+
+// US-02 / US-03 — Connexion citoyen ou agent
+export async function login({ telephone, motDePasse }) {
+  const user = db.users.find((u) => u.telephone === telephone)
+  if (!user) throw new ApiError(401, 'Identifiants incorrects')
+
+  const valid = await bcrypt.compare(motDePasse, user.motDePasseHash)
+  if (!valid) throw new ApiError(401, 'Identifiants incorrects')
+
+  const token = jwt.sign({ sub: user.id, role: user.role }, process.env.JWT_SECRET, {
+    expiresIn: '7d'
+  })
+  return { token, user: { id: user.id, nom: user.nom, role: user.role } }
+}
