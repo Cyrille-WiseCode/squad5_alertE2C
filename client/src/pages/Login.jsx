@@ -1,11 +1,103 @@
-// US-02 (citoyen) / US-03 (agent) — Connexion
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { loginCitoyen, setAuthToken } from "../lib/api.js";
+import BrandPanel from "../components/BrandPanel.jsx";
+
 export default function Login() {
+  const navigate = useNavigate();
+  const [telephone, setTelephone] = useState("");
+  const [motDePasse, setMotDePasse] = useState("");
+  const [erreur, setErreur] = useState("");
+  const [chargement, setChargement] = useState(false);
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    setErreur("");
+    setChargement(true);
+    try {
+      const { token } = await loginCitoyen({ telephone, motDePasse });
+      setAuthToken(token);
+      navigate("/mes-signalements");
+    } catch (err) {
+      setErreur(err.response?.data?.error || "Connexion impossible");
+    } finally {
+      setChargement(false);
+    }
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <form className="w-full max-w-sm bg-white rounded-xl border border-gray-200 p-6">
-        <h1 className="text-lg font-semibold text-navy mb-4">Connexion</h1>
-        {/* TODO: champs identifiants + appel API POST /api/auth/login */}
-      </form>
+    <div className="auth-split h-screen w-full min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      <section className="auth-pane w-full flex flex-col justify-center min-h-screen p-4 md:h-full md:min-h-0 md:px-8 lg:px-16 md:overflow-y-auto">
+        <div className="auth-card w-full max-w-md mx-auto p-8 rounded-3xl bg-white/60 backdrop-blur-xl border border-white/80 shadow-xl shadow-slate-200/50">
+        <Link to="/" className="inline-flex mb-7" aria-label="Accueil E2C">
+          <img src="/e2c-logo.svg" alt="E2C" className="w-32 h-auto" />
+        </Link>
+
+        <main className="auth-form-stage">
+        <form onSubmit={onSubmit} className="auth-form citizen-login w-full">
+          <div className="auth-user-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.25"/><path d="M5.5 19v-1.4a6.5 6.5 0 0 1 13 0V19z"/></svg>
+          </div>
+          <p className="text-xs font-semibold text-blue tracking-wide uppercase mb-2">
+            Bienvenue sur E2C
+          </p>
+          <h1 className="text-xl font-bold text-navy mb-2">
+            Ravi de vous retrouver.
+          </h1>
+          <p className="text-sm text-gray-500 mb-6">
+            Connectez-vous pour signaler un incident et suivre son évolution.
+          </p>
+
+          <label className="block text-xs text-gray-500 mb-2">
+            Numéro de téléphone
+          </label>
+          <div className="phone-field mb-4">
+            <span className="phone-prefix">
+              +242
+            </span>
+            <input
+              type="tel"
+              required
+              value={telephone}
+              onChange={(e) => setTelephone(e.target.value)}
+              placeholder="06 000 00 00"
+              className="phone-input bg-white/80 backdrop-blur-sm border border-gray-200/80 rounded-xl focus:bg-white"
+            />
+          </div>
+
+          <label className="block text-xs text-gray-500 mb-2">
+            Mot de passe
+          </label>
+          <input
+            type="password"
+            required
+            value={motDePasse}
+            onChange={(e) => setMotDePasse(e.target.value)}
+            className="auth-input w-full mb-4 bg-white/80 backdrop-blur-sm border border-gray-200/80 rounded-xl focus:bg-white"
+          />
+
+          {erreur && <p className="text-sm text-orange mb-4">{erreur}</p>}
+
+          <button
+            type="submit"
+            disabled={chargement}
+            className="auth-submit w-full bg-yellow text-navy font-semibold disabled:opacity-60"
+          >
+            <span>{chargement ? "Connexion..." : "Continuer"}</span>
+            {!chargement && <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" /></svg>}
+          </button>
+
+          <p className="text-center text-sm text-gray-500 mt-4">
+            Pas de compte ?{" "}
+            <Link to="/register" className="text-navy font-medium underline">
+              S'inscrire
+            </Link>
+          </p>
+        </form>
+        </main>
+        </div>
+      </section>
+      <BrandPanel />
     </div>
-  )
+  );
 }

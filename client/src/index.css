@@ -3,5 +3,100 @@
 @tailwind utilities;
 
 body {
-  @apply bg-cream text-[#1B1B18];
+  @apply bg-[#F7F6F0] text-[#1B1B18];
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { width: 100%; min-height: 100%; }
+#root { height: 100vh; min-height: 100vh; overflow: hidden; }
+body { overflow: hidden; }
+
+.app-shell { height: 100vh; background: #F7F6F0; scrollbar-width: none; }
+.app-shell::-webkit-scrollbar { display: none; }
+.auth-split { width: 100%; height: 100vh; min-height: 100vh; }
+.auth-pane { background: #F7F6F0; scrollbar-width: none; }
+.auth-pane::-webkit-scrollbar, .agent-auth-pane::-webkit-scrollbar { display: none; }
+.agent-auth-pane { background: radial-gradient(ellipse at 50% 35%, #26366e, #1B1F3B 64%); color: white; scrollbar-width: none; }
+.brand-panel { isolation: isolate; background: linear-gradient(145deg, #1B1F3B 0%, #151a35 56%, #0E1226 100%); }
+.brand-panel::before { content: ""; position: absolute; z-index: -1; width: min(70vw, 700px); aspect-ratio: 1; top: 43%; left: 50%; transform: translate(-50%,-50%); border-radius: 50%; background: radial-gradient(circle, rgba(75,105,209,.28), rgba(52,69,138,.12) 38%, transparent 70%); }
+.brand-topline { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.brand-topline > span:first-child { color: #fff; font-size: 30px; line-height: 1; font-weight: 850; letter-spacing: -.06em; }
+.brand-dot { color: #F4B436; }
+.brand-kicker, .brand-eyebrow { color: rgba(255,255,255,.55); font-size: 10px; font-weight: 700; letter-spacing: .14em; }
+.brand-illustration { display: flex; flex: 1; align-items: center; justify-content: center; min-height: 0; }
+.brand-illustration svg { display: block; width: min(100%, 460px); max-height: 52vh; overflow: visible; }
+.brand-illustration circle { fill: none; stroke: rgba(255,255,255,.09); stroke-width: 1; }
+.brand-illustration svg > circle:first-of-type { fill: url(#brandHalo); stroke: none; }
+.brand-illustration .brand-icon-ring { fill: rgba(255,255,255,.06); stroke: rgba(255,255,255,.34); stroke-width: 1.5; }
+.brand-illustration .brand-bolt { fill: #fff; stroke: none; }
+.brand-message { max-width: 540px; }
+.brand-eyebrow { margin: 0 0 16px; color: #F4B436; }
+.brand-message h2 { margin: 0; color: white; font-size: clamp(32px, 3.5vw, 48px); line-height: 1.1; font-weight: 750; letter-spacing: -.045em; }
+.brand-message h2 span { color: #aab8ee; }
+.brand-message > p:last-child { margin: 18px 0 0; color: rgba(255,255,255,.68); font-size: 15px; }
+.welcome-screen {
+  min-height: 100svh; overflow-x: hidden; overflow-y: auto; scrollbar-width: none; color: white; background: #1B1F3B;
+  background-image: radial-gradient(ellipse at 50% 28%, #25366e 0%, #1b1f3b 55%, #11162e 100%);
+}
+.welcome-screen::-webkit-scrollbar { display: none; }
+.welcome-brand { width: 100%; }
+.welcome-icon { display: grid; place-items: center; width: min(78vw, 290px); aspect-ratio: 1; color: white; }
+.welcome-waves { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 0 18px rgba(108,145,255,.25)); }
+.welcome-waves circle { fill: none; stroke: white; stroke-opacity: .14; stroke-width: .65; }
+.welcome-waves circle:first-child { stroke-opacity: .04; }
+.welcome-waves .welcome-bolt { fill: white; stroke: none; filter: drop-shadow(0 0 8px rgba(255,255,255,.7)); }
+.welcome-logo { margin: 24px 0 12px; color: white; font-size: clamp(48px, 7vw, 64px); line-height: 1; font-weight: 850; letter-spacing: -.065em; }
+.welcome-logo span { color: #F4B436; }
+.welcome-rule { width: 28px; height: 2px; background: #F4B436; margin: 18px 0 12px; }
+.welcome-tagline { margin: 0; font-size: 17px; line-height: 1.45; font-weight: 550; }
+.welcome-actions { flex-shrink: 0; }
+.welcome-cta { display: flex; width: 100%; align-items: center; justify-content: center; gap: 8px; border-radius: 12px; padding: 16px 18px; color: #1B1F3B; background: #F4B436; font-size: 14px; font-weight: 700; text-decoration: none; box-shadow: 0 8px 24px rgba(234,179,8,.1); }
+.welcome-cta svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.welcome-signup { margin: 0; font-size: 12px; color: rgba(255,255,255,.72); }
+.welcome-signup a { color: #F4B436; font-weight: 650; text-decoration: none; }
+.welcome-agent { display: inline-block; color: rgba(255,255,255,.72); font-size: 11px; font-weight: 650; text-decoration: none; }
+
+input { outline: none; transition: border-color .16s ease, box-shadow .16s ease; }
+input:focus { border-color: #2C3E8C !important; box-shadow: 0 0 0 3px rgba(44,62,140,.12); }
+.auth-form { padding: 0; background: transparent; border: 0; box-shadow: none; }
+.auth-page { background: #F7F6F0; }
+.auth-layout { min-height: 100svh; }
+.auth-form-stage { width: 100%; }
+.auth-card { background: linear-gradient(rgba(0,0,0,.035),rgba(0,0,0,.035)), rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.8); border-radius: 24px; box-shadow: 0 25px 50px rgba(148,163,184,.5); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
+.auth-user-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin: 0 0 24px; color: #2B4C9B; background: #eff6ff; border-radius: 16px; }
+.auth-user-icon svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.auth-form h1 { font-size: 27px; line-height: 1.12; letter-spacing: -.04em; }
+.auth-form label { color: #626675; font-weight: 600; }
+.phone-field, .auth-input { display: flex; min-height: 48px; align-items: center; border: 1px solid rgba(229,231,235,.8); border-radius: 12px; background: rgba(255,255,255,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+.phone-field:focus-within, .auth-input:focus { border-color: #2C3E8C; background: #fff; box-shadow: 0 0 0 3px rgba(44,62,140,.1); }
+.phone-prefix { align-self: stretch; display: flex; align-items: center; padding: 0 12px; border-right: 1px solid #e9e7e3; color: #252a48; font-size: 13px; font-weight: 650; }
+.phone-input { min-width: 0; width: 100%; height: 46px; padding: 0 16px; border: 0; border-radius: inherit; background: rgba(255,255,255,.8); color: #1b1e4b; font-size: 13px; box-shadow: none !important; }
+.phone-input:focus { border: 0 !important; box-shadow: none !important; }
+.auth-input { padding: 0 16px; color: #1b1e4b; font-size: 13px; box-shadow: none !important; }
+.auth-input:focus { box-shadow: 0 0 0 3px rgba(44,62,140,.1) !important; }
+.auth-submit { display: flex; min-height: 48px; align-items: center; justify-content: space-between; padding: 0 15px; border: 0; border-radius: 12px; background-color: #F4B436; font-size: 13px; }
+.auth-submit svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+form button { transition: filter .15s ease, transform .15s ease; }
+form button:hover:not(:disabled) { filter: brightness(.97); transform: translateY(-1px); }
+
+@media (max-width: 767px) and (max-height: 680px) {
+  .welcome-icon { width: min(64vw, 220px); }
+  .welcome-screen { padding-top: 24px; padding-bottom: 24px; }
+}
+
+@media (max-width: 767px) {
+  .auth-split { height: auto; min-height: 100vh; overflow: visible; }
+  .app-shell { overflow-y: auto; }
+  .brand-panel { display: none; }
+  .auth-card { padding: 24px; }
+}
+
+@media (min-width: 768px) {
+  .app-shell { overflow: hidden; }
+  .auth-split { overflow: hidden; }
+}
+
+@media (max-width: 640px) {
+  .citizen-login .auth-submit { margin-top: 10px; }
 }
