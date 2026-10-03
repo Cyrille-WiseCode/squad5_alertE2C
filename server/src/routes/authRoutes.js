@@ -1,5 +1,9 @@
 import { Router } from 'express'
 import { register, login } from '../controllers/authController.js'
+import { register, login, loginAgent } from '../controllers/authController.js'
+// ...
+router.post('/agent/login', loginAgent) // US-03
+
 
 const router = Router()
 
