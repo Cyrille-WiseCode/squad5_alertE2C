@@ -1,7 +1,17 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { db } from "../models/store.js";
+import { db, sauvegarderDb } from "../models/store.js";
 import { ApiError } from "../utils/apiError.js";
+
+// Normalise le numéro de téléphone (+242)
+export function normaliserTelephone(telephone) {
+  if (!telephone) return "";
+  let chiffres = String(telephone).replace(/\D/g, "");
+  if (chiffres.startsWith("00")) chiffres = chiffres.slice(2);
+  if (chiffres.startsWith("242")) chiffres = chiffres.slice(3);
+  chiffres = chiffres.replace(/^0+/, "0");
+  return chiffres ? `+242${chiffres}` : "";
+}
 
 // US-01 — Créer un compte citoyen
 export async function registerCitoyen({ nom, telephone, motDePasse }) {
@@ -11,30 +21,42 @@ export async function registerCitoyen({ nom, telephone, motDePasse }) {
   if (!motDePasse)
     throw new ApiError(400, 'Le champ "motDePasse" est obligatoire');
 
-  const exists = db.users.find((u) => u.telephone === telephone);
+  const telCanonique = normaliserTelephone(telephone);
+  if (!telCanonique)
+    throw new ApiError(400, 'Le champ "telephone" est invalide');
+
+  const exists = db.users.find(
+    (u) => normaliserTelephone(u.telephone) === telCanonique,
+  );
   if (exists) throw new ApiError(409, "Un compte existe déjà avec ce numéro");
 
   const motDePasseHash = await bcrypt.hash(motDePasse, 10);
   const user = {
     id: db.users.length + 1,
     nom,
-    telephone,
+    telephone: telCanonique,
     motDePasseHash,
     role: "citoyen",
   };
   db.users.push(user);
+  if (typeof sauvegarderDb === "function") sauvegarderDb();
   return { id: user.id, nom: user.nom, role: user.role };
 }
 
-// US-02 / US-03 — Connexion citoyen ou agent
+// US-02 — Connexion citoyen
 export async function login({ telephone, motDePasse } = {}) {
   if (!telephone)
     throw new ApiError(400, 'Le champ "telephone" est obligatoire');
   if (!motDePasse)
     throw new ApiError(400, 'Le champ "motDePasse" est obligatoire');
 
-  const user = db.users.find((u) => u.telephone === telephone);
+  const telCanonique = normaliserTelephone(telephone);
+  const user = db.users.find(
+    (u) => normaliserTelephone(u.telephone) === telCanonique,
+  );
   if (!user) throw new ApiError(404, "Utilisateur introuvable");
+  if (user.role !== "citoyen")
+    throw new ApiError(403, "Connectez-vous depuis l’espace Agent E2C");
 
   const valid = await bcrypt.compare(motDePasse, user.motDePasseHash);
   if (!valid) throw new ApiError(401, "Identifiants incorrects");
@@ -42,20 +64,22 @@ export async function login({ telephone, motDePasse } = {}) {
   const token = jwt.sign(
     { sub: user.id, role: user.role },
     process.env.JWT_SECRET || "secret",
-    {
-      expiresIn: "7d",
-    },
+    { expiresIn: "7d" },
   );
   return { token, user: { id: user.id, nom: user.nom, role: user.role } };
 }
 
+// US-03 — Connexion agent
 export async function loginAgent({ telephone, motDePasse } = {}) {
   if (!telephone)
     throw new ApiError(400, 'Le champ "telephone" est obligatoire');
   if (!motDePasse)
     throw new ApiError(400, 'Le champ "motDePasse" est obligatoire');
 
-  const user = db.users.find((u) => u.telephone === telephone);
+  const telCanonique = normaliserTelephone(telephone);
+  const user = db.users.find(
+    (u) => normaliserTelephone(u.telephone) === telCanonique,
+  );
   if (!user) throw new ApiError(404, "Identifiants incorrects");
   if (user.role !== "agent")
     throw new ApiError(403, "Accès réservé aux agents");
@@ -66,9 +90,7 @@ export async function loginAgent({ telephone, motDePasse } = {}) {
   const token = jwt.sign(
     { sub: user.id, role: user.role },
     process.env.JWT_SECRET || "secret",
-    {
-      expiresIn: "7d",
-    },
+    { expiresIn: "7d" },
   );
   return { token, user: { id: user.id, nom: user.nom, role: user.role } };
 }
