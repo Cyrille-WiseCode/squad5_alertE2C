@@ -2,6 +2,7 @@ import { Routes, Route, Link } from 'react-router-dom'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import MyReports from './pages/MyReports.jsx'
+import ReportDetail from './pages/ReportDetail.jsx'
 import NewReport from './pages/NewReport.jsx'
 import AgentReports from './pages/AgentReports.jsx'
 import AgentLogin from './pages/AgentLogin.jsx'
@@ -41,6 +42,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/agent/connexion" element={<AgentLogin />} />
         <Route path="/mes-signalements" element={<MyReports />} />
+        <Route path="/mes-signalements/:id" element={<ReportDetail />} />
         <Route path="/nouveau-signalement" element={<NewReport />} />
         <Route path="/agent" element={<AgentReports />} />
       </Routes>
