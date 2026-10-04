@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginAgent, setAuthToken } from "../lib/api.js";
-import BrandPanel from "../components/BrandPanel.jsx";
+import { Eye, EyeOff, Zap } from 'lucide-react'
+import { loginAgent, setAgentAuth } from '../lib/api.js'
+import AgentBrandPanel from '../components/AgentBrandPanel.jsx'
+import ThemeToggle from '../components/ThemeToggle.jsx'
 
 export default function AgentLogin() {
   const navigate = useNavigate();
   const [telephone, setTelephone] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [erreur, setErreur] = useState("");
   const [chargement, setChargement] = useState(false);
 
@@ -15,77 +18,46 @@ export default function AgentLogin() {
     setErreur("");
     setChargement(true);
     try {
-      const { token } = await loginAgent({ telephone, motDePasse });
-      setAuthToken(token);
-      navigate("/agent");
+      const { token, user } = await loginAgent({ telephone, motDePasse })
+      setAgentAuth(token, user)
+      navigate('/agent/incidents', { replace: true })
     } catch (err) {
-      setErreur(err.response?.data?.error || "Connexion impossible");
+      setErreur(err.response?.data?.error || 'Connexion impossible')
     } finally {
-      setChargement(false);
+      setChargement(false)
     }
   }
 
   return (
-    <div className="auth-split agent-auth-split h-screen w-full min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
-      <section className="agent-auth-pane w-full min-h-screen flex flex-col justify-center items-center p-4 md:h-full md:min-h-0 md:px-8 lg:px-16 md:overflow-y-auto">
-      <div className="w-full max-w-md">
-        <Link to="/" className="inline-flex mb-6" aria-label="Accueil E2C">
-          <img src="/e2c-mark.svg" alt="" className="w-10 h-10 rounded-xl" />
-        </Link>
+    <div className="auth-split grid min-h-screen w-full grid-cols-1 overflow-hidden md:grid-cols-2">
+      <section className="agent-auth-pane flex min-h-screen w-full flex-col justify-center px-4 py-8 md:h-full md:min-h-0 md:overflow-y-auto md:px-8 lg:px-16">
+        <main className="agent-login-card mx-auto w-full max-w-md rounded-3xl border border-white/80 bg-white/60 p-8 shadow-2xl shadow-slate-200/50 backdrop-blur-xl dark:border-white/10 dark:bg-[#1B1F3B]/70 dark:shadow-none">
+          <div className="mb-3 flex justify-end"><ThemeToggle compact /></div>
+          <Link to="/" aria-label="Accueil E2C" className="mb-6 inline-flex items-center gap-3 text-2xl font-extrabold tracking-tight text-[#1B1F3B] dark:text-white">
+            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1B1F3B] text-[#F4B436]"><Zap className="h-5 w-5" fill="currentColor" /></span>
+            <span>E2C<span className="text-[#F4B436]">.</span></span>
+          </Link>
+          <form onSubmit={onSubmit}>
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[#F4B436]">Accès professionnel</p>
+            <h1 className="mb-2 text-2xl font-bold text-[#1B1F3B] dark:text-white">Espace Agent</h1>
+            <p className="mb-6 text-sm text-gray-600 dark:text-gray-300">Connectez-vous pour gérer les signalements de votre secteur.</p>
 
-        <form
-          onSubmit={onSubmit}
-          className="bg-[#222A4A]/70 backdrop-blur-md border border-white/10 shadow-2xl rounded-3xl p-8"
-        >
-          <p className="text-xs font-semibold text-yellow tracking-wide uppercase mb-2">
-            Accès professionnel
-          </p>
-          <h1 className="text-xl font-bold text-white mb-2">Espace E2C.</h1>
-          <p className="text-sm text-white/60 mb-6">
-            Connectez-vous pour gérer les signalements de votre secteur.
-          </p>
+            <label htmlFor="agent-phone" className="mb-1 block text-xs font-semibold text-gray-600 dark:text-gray-300">Numéro de téléphone</label>
+            <input id="agent-phone" type="tel" autoComplete="username" required value={telephone} onChange={(e) => setTelephone(e.target.value)} className="mb-4 w-full rounded-xl border border-gray-200 bg-white px-3 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#2B4C9B] dark:border-white/10 dark:bg-[#222A4A] dark:text-white dark:placeholder:text-gray-400" />
 
-          <label className="block text-xs text-white/50 mb-1">
-            Numéro de téléphone
-          </label>
-          <input
-            type="tel"
-            required
-            value={telephone}
-            onChange={(e) => setTelephone(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm mb-4 placeholder:text-white/30"
-          />
+            <label htmlFor="agent-password" className="mb-1 block text-xs font-semibold text-gray-600 dark:text-gray-300">Mot de passe agent</label>
+            <div className="relative mb-4">
+              <input id="agent-password" type={passwordVisible ? 'text' : 'password'} autoComplete="current-password" required value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-3 py-3 pr-12 text-sm text-gray-900 placeholder:text-gray-400 focus:border-[#2B4C9B] dark:border-white/10 dark:bg-[#222A4A] dark:text-white dark:placeholder:text-gray-400" />
+              <button type="button" aria-label={passwordVisible ? 'Masquer le mot de passe' : 'Afficher le mot de passe'} aria-pressed={passwordVisible} onClick={() => setPasswordVisible((visible) => !visible)} className="absolute inset-y-0 right-3 z-10 inline-flex cursor-pointer items-center justify-center bg-transparent p-1 text-gray-500 hover:text-[#2B4C9B] dark:text-gray-300" style={{ pointerEvents: 'auto' }}>{passwordVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button>
+            </div>
 
-          <label className="block text-xs text-white/50 mb-1">
-            Mot de passe
-          </label>
-          <input
-            type="password"
-            required
-            value={motDePasse}
-            onChange={(e) => setMotDePasse(e.target.value)}
-            className="w-full px-3 py-2 rounded-lg bg-white/10 border border-white/10 text-white text-sm mb-4"
-          />
-
-          {erreur && <p className="text-sm text-orange mb-4">{erreur}</p>}
-
-          <button
-            type="submit"
-            disabled={chargement}
-            className="w-full py-2.5 rounded-lg bg-yellow text-navy font-semibold disabled:opacity-60"
-          >
-            {chargement ? "Connexion..." : "Se connecter"}
-          </button>
-
-          <p className="text-center text-sm text-white/50 mt-4">
-            <Link to="/login" className="underline">
-              Accès citoyen
-            </Link>
-          </p>
-        </form>
-      </div>
+            {erreur && <p role="alert" className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-300/20 dark:bg-red-500/10 dark:text-red-200">{erreur}</p>}
+            <button type="submit" disabled={chargement} className="yellow-flash w-full rounded-xl px-4 py-3 font-bold disabled:opacity-60">{chargement ? 'Connexion…' : 'Se connecter'}</button>
+            <p className="mt-5 text-center text-sm text-gray-600 dark:text-gray-300"><Link to="/login" className="font-semibold text-[#2B4C9B] underline underline-offset-4 dark:text-[#F4B436]">Accès citoyen</Link></p>
+          </form>
+        </main>
       </section>
-      <BrandPanel />
+      <AgentBrandPanel />
     </div>
   );
 }

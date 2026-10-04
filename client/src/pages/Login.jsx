@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginCitoyen, setAuthToken } from "../lib/api.js";
+import { Eye, EyeOff, Zap } from "lucide-react";
+import { loginCitoyen, setAuthToken, setAuthUser } from "../lib/api.js";
 import BrandPanel from "../components/BrandPanel.jsx";
+import ThemeToggle from "../components/ThemeToggle.jsx";
 
 export default function Login() {
   const navigate = useNavigate();
   const [telephone, setTelephone] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const [erreur, setErreur] = useState("");
   const [chargement, setChargement] = useState(false);
 
@@ -15,9 +18,10 @@ export default function Login() {
     setErreur("");
     setChargement(true);
     try {
-      const { token } = await loginCitoyen({ telephone, motDePasse });
+      const { token, user } = await loginCitoyen({ telephone, motDePasse });
       setAuthToken(token);
-      navigate("/mes-signalements");
+      setAuthUser(user);
+      navigate("/accueil");
     } catch (err) {
       setErreur(err.response?.data?.error || "Connexion impossible");
     } finally {
@@ -28,9 +32,13 @@ export default function Login() {
   return (
     <div className="auth-split h-screen w-full min-h-screen grid grid-cols-1 md:grid-cols-2 overflow-hidden">
       <section className="auth-pane w-full flex flex-col justify-center min-h-screen p-4 md:h-full md:min-h-0 md:px-8 lg:px-16 md:overflow-y-auto">
-        <div className="auth-card w-full max-w-md mx-auto p-8 rounded-3xl bg-white/60 backdrop-blur-xl border border-white/80 shadow-xl shadow-slate-200/50">
+        <div className="auth-card w-full max-w-md mx-auto p-8 rounded-3xl bg-white/60 backdrop-blur-xl border border-white/80 shadow-2xl shadow-slate-200/50 dark:border-white/10">
+        <div className="mb-3 flex justify-end"><ThemeToggle compact /></div>
         <Link to="/" className="inline-flex mb-7" aria-label="Accueil E2C">
-          <img src="/e2c-logo.svg" alt="E2C" className="w-32 h-auto" />
+          <span className="inline-flex items-center gap-2 text-2xl font-extrabold tracking-tight text-[#1B1F3B] dark:text-white">
+            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1B1F3B] text-[#F4B436]"><Zap className="h-5 w-5" fill="currentColor" aria-hidden="true" /></span>
+            <span>E2C<span className="text-[#F4B436]">.</span></span>
+          </span>
         </Link>
 
         <main className="auth-form-stage">
@@ -65,23 +73,20 @@ export default function Login() {
             />
           </div>
 
-          <label className="block text-xs text-gray-500 mb-2">
+          <label htmlFor="citizen-login-password" className="block text-xs text-gray-500 mb-2">
             Mot de passe
           </label>
-          <input
-            type="password"
-            required
-            value={motDePasse}
-            onChange={(e) => setMotDePasse(e.target.value)}
-            className="auth-input w-full mb-4 bg-white/80 backdrop-blur-sm border border-gray-200/80 rounded-xl focus:bg-white"
-          />
+          <div className="relative mb-4">
+            <input id="citizen-login-password" type={passwordVisible ? "text" : "password"} required value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} className="auth-input w-full bg-white/80 pr-12 backdrop-blur-sm border border-gray-200/80 rounded-xl focus:bg-white" />
+            <button type="button" aria-label={passwordVisible ? "Masquer le mot de passe" : "Afficher le mot de passe"} aria-pressed={passwordVisible} onClick={() => setPasswordVisible((visible) => !visible)} className="absolute inset-y-0 right-3 z-10 inline-flex cursor-pointer items-center justify-center bg-transparent p-1 text-gray-500 hover:text-[#2B4C9B] dark:text-gray-300" style={{ pointerEvents: 'auto' }}>{passwordVisible ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}</button>
+          </div>
 
           {erreur && <p className="text-sm text-orange mb-4">{erreur}</p>}
 
           <button
             type="submit"
             disabled={chargement}
-            className="auth-submit w-full bg-yellow text-navy font-semibold disabled:opacity-60"
+            className="auth-submit yellow-flash w-full font-semibold disabled:opacity-60"
           >
             <span>{chargement ? "Connexion..." : "Continuer"}</span>
             {!chargement && <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" /></svg>}
@@ -89,7 +94,7 @@ export default function Login() {
 
           <p className="text-center text-sm text-gray-500 mt-4">
             Pas de compte ?{" "}
-            <Link to="/register" className="text-navy font-medium underline">
+            <Link to="/register" className="font-semibold text-[#2B4C9B] underline dark:text-[#F4B436]">
               S'inscrire
             </Link>
           </p>
