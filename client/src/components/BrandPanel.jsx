@@ -1,6 +1,6 @@
 export default function BrandPanel() {
   return (
-    <aside className="brand-panel hidden md:flex flex-col justify-between p-12 text-white relative overflow-hidden h-full">
+    <aside className="brand-panel hidden md:flex flex-col justify-between p-12 relative overflow-hidden h-full">
       <div className="brand-topline"><span>E2C<span className="brand-dot">.</span></span><span className="brand-kicker">ÉNERGIE ÉLECTRIQUE DU CONGO</span></div>
       <div className="brand-illustration" aria-hidden="true">
         <svg viewBox="0 0 360 360">
