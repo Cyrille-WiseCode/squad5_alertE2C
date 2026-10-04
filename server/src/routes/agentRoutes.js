@@ -27,8 +27,8 @@ router.get('/reports/:id', (req, res, next) => {
 // US-16 — Changer le statut (RM-05, RM-06, RM-07)
 router.patch('/reports/:id/status', (req, res, next) => {
   try {
-    const { statut } = req.body
-    res.json(reportsService.changerStatut(req.params.id, statut))
+    const { statut, note } = req.body
+    res.json(reportsService.changerStatut(req.params.id, statut, note, req.auth.userId))
   } catch (err) {
     next(err)
   }
