@@ -72,3 +72,8 @@ export async function loginAgent({ telephone, motDePasse } = {}) {
   );
   return { token, user: { id: user.id, nom: user.nom, role: user.role } };
 }
+// Normalise le numéro de téléphone en supprimant espaces, tirets et indicatifs superflus
+export function normaliserTelephone(telephone) {
+  if (!telephone) return "";
+  return String(telephone).replace(/[\s\-\+\(\)]/g, "");
+}
