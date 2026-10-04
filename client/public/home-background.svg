@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 812" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="32%" r="75%"><stop stop-color="#223268"/><stop offset=".45" stop-color="#1B1F3B"/><stop offset="1" stop-color="#0E1226"/></radialGradient>
+    <radialGradient id="halo"><stop stop-color="#5A81FA" stop-opacity=".35"/><stop offset=".5" stop-color="#3D53A0" stop-opacity=".15"/><stop offset="1" stop-color="#1B1F3B" stop-opacity="0"/></radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="375" height="812" fill="url(#bg)"/>
+  <g transform="translate(187.5 260)">
+    <circle r="220" fill="url(#halo)"/>
+    <circle r="250" fill="none" stroke="#fff" stroke-opacity=".03"/><circle r="200" fill="none" stroke="#fff" stroke-opacity=".05"/><circle r="155" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="1.2"/><circle r="115" fill="none" stroke="#fff" stroke-opacity=".12" stroke-width="1.2"/><circle r="80" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="1.5"/>
+    <circle r="52" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".25" stroke-width="1.5" filter="url(#glow)"/><circle r="48" fill="none" stroke="#fff" stroke-opacity=".4"/>
+    <path fill="#fff" filter="url(#glow)" d="m2-26-16 28h12l-4 24L14-2H2z"/>
+  </g>
+</svg>
