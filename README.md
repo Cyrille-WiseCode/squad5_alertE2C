@@ -81,3 +81,20 @@ Les aperçus Vercel utilisent souvent des domaines différents : ajoutez leur do
 - **AE-4** — Traitement Agent E2C (US-14 à US-16)
 
 Voir le dossier BA pour le détail des User Stories, règles métier et critères d'acceptation.
+
+
+## Squad 5 : Meta_Builders
+
+9 membres · 1 Product Manager · 2 Business Analysts · 6 Fullstack
+
+| Nom | Parcours | Email | Téléphone | Rôle attribué |
+|-|-|-|-|-|
+| Kedja Jean Lecam PAPA | Product Manager | lecampapa11@gmail.com | +250788730445 | / |
+| Arhis Marvel Chrisnovie KOUATOUKA | Business Analyst | marvelkam03@gmail.com | 067097820 | Lead du projet |
+| Junior Rex OMBOULA KANGA | Business Analyst | juniorrex991@gmail.com | 066919280 | / |
+| Brissam Josué MOUKOUANGA TOMBET | Développeur Fullstack | brissammoukouanga@gmail.com | 064201332 | / |
+| Jaurez Mardochey LOUKINZOU | Développeur Fullstack | mardocheyloukinzou@gmail.com | 068300863 | / |
+| Loïc Divin Céleste MILANDOU | Développeur Fullstack | celestemilandou353@gmail.com | 065436381 | / |
+| Ferol Jeansmy EBATA-MOMBOULI | Développeur Fullstack | fmombouli532@gmail.com | 064646965 | Lead Fullstack |
+| **TSIMBA Cyrille** | Développeur Fullstack | jorcynzaou11@gmail.com | 066646478 | **Repo Admin** |
+| Exaucé Ryzal IBARA NOUNGOU AKIEBARY | Développeur Fullstack | ryzalibara@gmail.com | 065876401 | / |
