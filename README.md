@@ -40,21 +40,6 @@ App disponible sur http://localhost:5173
 - Framework : Vite ; commande de build : `npm run build` ; dossier de sortie : `dist`.
 - Déployez une première fois pour obtenir le domaine public Vercel. `client/vercel.json` gère les routes React lors d'un rechargement direct.
 
-### 2. Backend sur Render
-
-- Créez un **Web Service** depuis le même dépôt et choisissez `server` comme **Root Directory**.
-- Build Command : `npm ci` ; Start Command : `npm start`.
-- Définissez `NODE_ENV=production`, `JWT_SECRET` (valeur aléatoire longue), `CLIENT_ORIGINS` (domaine Vercel exact, sans slash final), ainsi que `E2C_AGENT_NAME`, `E2C_AGENT_PHONE` et `E2C_AGENT_PASSWORD` pour le compte de démo.
-- Pour garder `db.json` et les photos, attachez un disque persistant monté sur `/var/data`, puis définissez `E2C_DATA_DIR=/var/data` et `E2C_UPLOADS_DIR=/var/data/uploads`.
-- Attendez la fin du déploiement et copiez l'URL `https://…onrender.com` du service.
-
-### 3. Relier le frontend à l'API
-
-- Dans les variables Vercel pour Production, définissez `VITE_API_URL=https://…onrender.com/api` avec l'URL Render réelle.
-- Redéployez Vercel après avoir ajouté cette variable : Vite l'intègre au build.
-- Vérifiez l'API en ouvrant `https://…onrender.com/api/health`, puis testez l'inscription citoyenne, la connexion agent et l'envoi d'une photo.
-
-Les aperçus Vercel utilisent souvent des domaines différents : ajoutez leur domaine à `CLIENT_ORIGINS` si vous voulez y tester l'API. Le service web gratuit Render peut s'endormir après une période sans trafic et ne permet pas les disques persistants ; dans ce cas, les fichiers JSON et photos de cette version ne sont pas fiables pour conserver les données. Render décrit ces limites dans sa [FAQ stockage](https://render.com/docs/faq) et ses [options de disque persistant](https://render.com/docs/disks).
 
 ## Palette (logo E2C)
 
